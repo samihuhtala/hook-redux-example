@@ -31,3 +31,25 @@
     transform: rotate(360deg);
   }
 }
+.rotation {
+  animation: rotation infinite 2s linear;
+}
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+}
+button {
+  height: 50px;
+  width: 50px;
+  font-size: 40px;
+  color: white;
+  background-color: pink;
+}
+.AnimatedNumber{
+  animation: rotation infinite 2s linear;
+  font-size: 40px;
+}

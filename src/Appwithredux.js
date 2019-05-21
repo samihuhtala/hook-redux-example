@@ -4,6 +4,8 @@ import styled, { createGlobalStyle } from "styled-components";
 import { Buttons } from "./components/dateapp/Buttons";
 import { DateCard } from "./components/dateapp/DateCard";
 import { TopBar } from "./components/dateapp/TopBar";
+import * as ReactRedux from "react-redux";
+import { swipeRight, fetchRandomUser, swipeLeft } from './redux';
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -44,28 +46,12 @@ const PhoneDisplayWrapper = styled.div`
   overflow: hidden;
 `;
 
-function App() {
-  const [swipeStatus, setSwipeStatus] = React.useState("INITIAL");
-  const [response, setResponse] = React.useState(null);
-  const [loading, setLoading] = React.useState(false);
-
+function Appwithredux(props) {
+  const {swipeStatus, swipeRight,swipeLeft, fetchRandomUser, loading, response} = props;
   React.useEffect(() => {
-    if (swipeStatus === "CENTER") {
-      return;
-    }
-
-    setTimeout(() => {
-      setLoading(true);
-
-      fetch("https://randomuser.me/api/")
-        .then(response => response.json())
-        .then(json => {
-          setResponse(json.results[0]);
-          setSwipeStatus("CENTER");
-          setLoading(false);
-        });
-    }, 600);
-  }, [swipeStatus]);
+    if (swipeStatus === 'CENTER')return;
+    setTimeout(() => fetchRandomUser(), 600)
+  },[swipeStatus]);
 
   return (
     <IPhoneBackground>
@@ -83,12 +69,23 @@ function App() {
           />
         )}
         <Buttons
-          onAccept={() => setSwipeStatus("RIGHT")}
-          onDecline={() => setSwipeStatus("LEFT")}
+          onAccept={() => swipeRight()}
+          onDecline={() => swipeLeft()}
         />
       </PhoneDisplayWrapper>
     </IPhoneBackground>
   );
 }
+const mapStateToProps = (state) => ({
+  swipeStatus: state.swipeStatus,
+  loading: state.loading,
+  response: state.response
+});
 
-export default App;
+const mapDispatchToProps = dispatch => ({
+  swipeRight: () => dispatch(swipeRight()),
+  swipeLeft: () => dispatch(swipeLeft()),
+  fetchRandomUser: () => dispatch(fetchRandomUser())
+});
+
+export default ReactRedux.connect(mapStateToProps, mapDispatchToProps)(Appwithredux);
